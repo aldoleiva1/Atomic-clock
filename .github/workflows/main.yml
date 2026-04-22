@@ -1,0 +1,30 @@
+# newrelic Exporter Workflow
+# This workflow responsible for running newrelic exporter.
+# new_relic_api_key: The New Relic API key. To create a User API key, see the <a href="https://docs.newrelic.com/docs/apis/intro-apis/new-relic-api-keys" target="_blank"> New Relic documentation</a>.
+# new_relic_account_id: The New Relic account ID. To retrieve the account ID, click the user menu on the lower-left corner of your New Relic dashboard, then go to Administration > Access management > Accounts to see account IDs. For more information on how to find the account ID, see the <a href="https://docs.newrelic.com/docs/accounts/accounts-billing/account-structure/account-id/" target="_blank"> New Relic documentation</a>.
+# new_relic_graphql_url: URL for New Relic GraphQL API. If not provided, the default value will be https://api.newrelic.com/graphql. Users in the EU region should use <a href="https://api.eu.newrelic.com/graphql" target="_blank"> https://api.eu.newrelic.com/graphql</a>. For more information on GraphQL URL, see the <a href="https://docs.newrelic.com/docs/apis/nerdgraph/get-started/introduction-new-relic-nerdgraph/" target="_blank"> New Relic documentation</a>.
+# new_relic_rest_api_url: Base URL for New Relic REST API. If not provided, the default value will be https://api.newrelic.com. Users in the EU region should use <a href="https://api.eu.newrelic.com" target="_blank"> https://api.eu.newrelic.com</a>. For more information on REST API URL, see the <a href="https://docs.newrelic.com/docs/apis/rest-api-v2/get-started/introduction-new-relic-rest-apis/" target="_blank"> New Relic documentation</a>.
+
+on:
+    workflow_dispatch:
+    schedule:
+        - cron: '0 */1 * * *' # Determines the scheduled interval for this workflow. This example runs every hour.
+
+jobs:
+    run-integration:
+        runs-on: ubuntu-latest
+		timeout-minutes: 30 # Set a time limit for the job
+		
+        steps:
+            - name: Run newrelic Integration
+              uses: port-labs/ocean-sail@v1
+              with:
+                type: newrelic
+                port_client_id: ${{ secrets.PORT_CLIENT_ID }}
+                port_client_secret: ${{ secrets.PORT_CLIENT_SECRET }}
+                port_base_url: "https://api.port.io"
+                config: |
+                    new_relic_api_key: ${{ secrets.newRelicAPIKey }}
+                    new_relic_account_id: ${{ secrets.newRelicAccountID }}
+                    new_relic_graphql_url: https://api.newrelic.com/graphql
+                    new_relic_rest_api_url: https://api.newrelic.com
